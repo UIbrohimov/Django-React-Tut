@@ -1,36 +1,31 @@
 version: '3'
 
 services:
-  
+
   backend:
     build:
-      context: ./
-      args:
-        DJANGO_ALLOWED_HOSTS: 127.0.0.1
-        DJANGO_SECRET_KEY: "django-insecure-l^v6-8^w4tu^ju&a1*j00i#gstj7*b8e*e4m3t7@o(ts32(n!k"
-        DJANGO_CORS_ORIGIN_WHITELIST: http://127.0.0.1
-    command: gunicorn blog_backend.wsgi --bind 0.0.0.0:8000
+      context: .
+    env_file:
+      - .env
+    command: ["gunicorn", "blog_backend.wsgi", "--bind", "0.0.0.0:8000"]
     ports:
-      - "8000:8000"
-  
+      - "0.0.0.0:8000:8000"
+
   frontend:
     build:
       context: ./blog/blog_frontend
-      args:
-        API_URL: https://127.0.0.1
+    env_file:
+      - .env
     volumes:
       - build_folder:/frontend/build
-  
-  nginx:
-    image: nginx:latest
-    ports:
-      - 80:8080
-    volumes:
-      - ./webserver/nginx-proxy.conf:/etc/nginx/conf.d/default.conf:ro
-      - build_folder:/var/www/frontend
-    depends_on:
-      - backend
-      - frontend
 
-volumes:
-  build_folder:
+  # nginx:
+  #   image: nginx:latest
+  #   ports:
+  #     - 80:8080
+  #   volumes:
+  #     - ./webserver/nginx-proxy.conf:/etc/nginx/conf.d/default.conf:ro
+  #     - build_folder:/var/www/frontend
+  #   depends_on:
+  #     - backend
+  #     - frontend

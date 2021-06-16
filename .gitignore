@@ -1,0 +1,8 @@
+node_modules
+__pychache__
+*.pyc
+.bak
+.vscode
+.idea
+db.sqlite3
+.env
